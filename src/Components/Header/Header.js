@@ -1,12 +1,13 @@
-import React, { Component } from 'react';
-import './Header.css';
+import React, { Component } from "react";
+import axios from "axios";
+import "./Header.css";
 
 export default class Header extends Component {
   constructor() {
     super();
     this.state = {
-      username: '',
-      password: '',
+      username: "",
+      password: "",
       isAdmin: false,
     };
     this.register = this.register.bind(this);
@@ -28,15 +29,48 @@ export default class Header extends Component {
   }
 
   login() {
-    // axios POST to /auth/login here
+    const { username, password } = this.state;
+    axios
+      .post("/auth/login", { username, password })
+      .then((res) => {
+        this.props.updateUser(res.data);
+        this.setState({
+          username: "",
+          password: "",
+        });
+      })
+      .catch((err) => {
+        // console.log(err.response.request)
+        alert(err.response.request.response);
+      });
   }
 
   register() {
-    // axios POST to /auth/register here
+    const { username, password, isAdmin } = this.state;
+    axios
+      .post("/auth/register", { username, password, isAdmin })
+      .then((res) => {
+        this.setState({
+          username: "",
+          password: "",
+        });
+        this.props.updateUser(res.data);
+      })
+      .catch((err) => {
+        this.setState({
+          username: "",
+          password: "",
+        });
+        alert(err.response.request.response);
+      });
   }
 
   logout() {
-    // axios GET to /auth/logout here
+    axios
+      .get("/auth/logout")
+      .then(() => "done")
+      .catch((err) => console.log(err));
+    this.props.updateUser({});
   }
 
   render() {
@@ -58,16 +92,21 @@ export default class Header extends Component {
               type="text"
               placeholder="Username"
               value={username}
-              onChange={e => this.handleUsernameInput(e.target.value)}
+              onChange={(e) => this.handleUsernameInput(e.target.value)}
             />
             <input
               type="password"
               placeholder="Password"
               value={password}
-              onChange={e => this.handlePasswordInput(e.target.value)}
+              onChange={(e) => this.handlePasswordInput(e.target.value)}
             />
             <div className="adminCheck">
-              <input type="checkbox" id="adminCheckbox" onChange={() => this.toggleAdmin()} /> <span> Admin </span>
+              <input
+                type="checkbox"
+                id="adminCheckbox"
+                onChange={() => this.toggleAdmin()}
+              />{" "}
+              <span> Admin </span>
             </div>
             <button onClick={this.login}>Log In</button>
             <button onClick={this.register} id="reg">
@@ -79,4 +118,3 @@ export default class Header extends Component {
     );
   }
 }
-
