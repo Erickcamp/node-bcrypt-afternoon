@@ -19,7 +19,7 @@ module.exports = {
   },
   getAllTreasure: async (req, res) => {
     const db = req.app.get("db");
-    const allTheLoot = await db.get_alltreasure();
+    const allTheLoot = await db.get_all_treasure();
     return res.status(200).send(allTheLoot);
   },
 };

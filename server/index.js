@@ -8,7 +8,9 @@ const app = express();
 const auth = require("./controllers/middleware/authMiddleware");
 app.use(express.json());
 
-const { SERVER_PORT, CONNECTION_STRING, SESSION_SECRET } = process.env;
+const { CONNECTION_STRING, SESSION_SECRET } = process.env;
+
+const SERVER_PORT = 4000
 
 app.use(
   session({
